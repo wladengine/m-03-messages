@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoAndCopyShop.ScanWorker", "PhotoAndCopyShop.ScanWorker\PhotoAndCopyShop.ScanWorker.csproj", "{AD835FAA-16E5-48C8-9F1B-CD1B44873127}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoAndCopyShop.ReceiverService", "PhotoAndCopyShop.ReceiverService\PhotoAndCopyShop.ReceiverService.csproj", "{51A0B421-CA03-4CAE-A45F-EB0EE40F354B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AD835FAA-16E5-48C8-9F1B-CD1B44873127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD835FAA-16E5-48C8-9F1B-CD1B44873127}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD835FAA-16E5-48C8-9F1B-CD1B44873127}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD835FAA-16E5-48C8-9F1B-CD1B44873127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51A0B421-CA03-4CAE-A45F-EB0EE40F354B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51A0B421-CA03-4CAE-A45F-EB0EE40F354B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51A0B421-CA03-4CAE-A45F-EB0EE40F354B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51A0B421-CA03-4CAE-A45F-EB0EE40F354B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {52D81E4E-4AB4-4DBC-A875-834461B06159}
+	EndGlobalSection
+EndGlobal
