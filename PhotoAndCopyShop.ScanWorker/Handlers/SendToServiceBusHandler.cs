@@ -1,4 +1,5 @@
 ﻿using Azure.Messaging.ServiceBus;
+using System;
 
 namespace PhotoAndCopyShop.ScanWorker.Handlers;
 
@@ -23,12 +24,14 @@ public class SendToServiceBusHandler : HandlerBase<FileInfo>
         try
         {
             // Create a message with the specified body
-            byte[] fileData = await File.ReadAllBytesAsync(fileInfo.FullName);
-            List<byte[]> chunks = GetChunkedFileData(fileData);
-
+            await using FileStream fs = new(fileInfo.FullName, FileMode.Open);
+            List<long> chunks = GetChunkedFileOffsets(fs.Length);
             for (var i = 0; i < chunks.Count; i++)
             {
-                var message = new ServiceBusMessage(body: chunks[i]);
+                var chunkData = new byte[MaxChunkSize];
+                fs.Seek(chunks[i], SeekOrigin.Begin);
+                _ = await fs.ReadAsync(chunkData, 0, MaxChunkSize);
+                var message = new ServiceBusMessage(body: chunkData);
                 message.ApplicationProperties.Add("fileName", fileInfo.Name);
                 message.ApplicationProperties.Add("fileExtenstion", fileInfo.Extension);
                 message.ApplicationProperties.Add("fileSize", fileInfo.Length);
@@ -50,24 +53,28 @@ public class SendToServiceBusHandler : HandlerBase<FileInfo>
         await base.HandleAsync(fileInfo);
     }
 
-    private static List<byte[]> GetChunkedFileData(byte[] data)
+    private static List<long> GetChunkedFileOffsets(long dataLength)
     {
-        if (data.Length <= MaxChunkSize)
+        if (MaxChunkSize == -1)
         {
-            return new List<byte[]>(1) { data };
+            throw new DivideByZeroException("incorrect MaxChunkSize");
+        }
+        if (dataLength <= MaxChunkSize)
+        {
+            return new List<long>(1) { dataLength };
         }
 
-        int capacity = data.Length / MaxChunkSize + 1;
-        var list = new List<byte[]>(capacity);
+        long capacity = dataLength / MaxChunkSize + 1;
+        if (capacity > int.MaxValue)
+        {
+            throw new OverflowException($"File too big to send");
+        }
+
+        var list = new List<long>((int)capacity);
         for (var i = 0; i < capacity; i++)
         {
-            int firstByte = i * MaxChunkSize;
-            int lastByte = (i + 1) * MaxChunkSize;
-            if (lastByte >= data.Length)
-            {
-                lastByte = data.Length;
-            }
-            list.Add(data[firstByte..lastByte]);
+            long firstByte = i * MaxChunkSize;
+            list.Add(firstByte);
         }
 
         return list;

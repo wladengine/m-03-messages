@@ -64,12 +64,12 @@ public class ReceiverDaemon
                 }
 
                 await using FileStream fileStream = new(fileName.ToString(), FileMode.OpenOrCreate, FileAccess.Write);
-                byte[] buffer = message.Body.ToArray();
+                ReadOnlyMemory<byte> buffer = message.Body.ToMemory();
                 if (fileoffset != null && (long)fileoffset > 0)
                 {
                     fileStream.Seek((long)fileoffset, SeekOrigin.Begin);
                 }
-                await fileStream.WriteAsync(buffer, 0, buffer.Length);
+                await fileStream.WriteAsync(buffer);
 
                 await receiver.CompleteMessageAsync(message);
             }
