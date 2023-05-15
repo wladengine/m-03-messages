@@ -7,7 +7,7 @@ public class SendToServiceBusHandler : HandlerBase<FileInfo>
 {
     private readonly string _connectionString;
     private readonly string _queueName;
-    private const int MaxChunkSize = 250_000;
+    private const int MaxChunkSize = 84_000;
 
     public SendToServiceBusHandler(string connectionString, string queueName)
     {
@@ -26,11 +26,18 @@ public class SendToServiceBusHandler : HandlerBase<FileInfo>
             // Create a message with the specified body
             await using FileStream fs = new(fileInfo.FullName, FileMode.Open);
             List<long> chunks = GetChunkedFileOffsets(fs.Length);
+            var chunkData = new byte[MaxChunkSize];
             for (var i = 0; i < chunks.Count; i++)
             {
-                var chunkData = new byte[MaxChunkSize];
+                int chunkSize = MaxChunkSize;
+                if (i > 0 && i == chunks.Count - 1)
+                {
+                    chunkSize = (int)(fs.Length - chunks[i]);
+                    chunkData = new byte[chunkSize];
+                }
+
                 fs.Seek(chunks[i], SeekOrigin.Begin);
-                _ = await fs.ReadAsync(chunkData, 0, MaxChunkSize);
+                _ = await fs.ReadAsync(chunkData, 0, chunkSize);
                 var message = new ServiceBusMessage(body: chunkData);
                 message.ApplicationProperties.Add("fileName", fileInfo.Name);
                 message.ApplicationProperties.Add("fileExtenstion", fileInfo.Extension);
