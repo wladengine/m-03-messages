@@ -1,0 +1,9 @@
+{
+  //"FolderPath": "C:\\Users\\Vladislav_Chikhira\\Downloads",
+  "ServiceBus": {
+    "QueueName": "scanned.new"
+  },
+  "ConnectionStrings": {
+    "ServiceBus": "Endpoint=sb://wladocrservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=4NUv7o5D5ABuflvDFq3bO67xXVHiLdUdZ+ASbHdvZfA="
+  }
+}
